@@ -199,7 +199,7 @@ class NF_Subs {
 					$label = '';
 				}
 
-				$label_array[0][ $field_id ] = apply_filters( 'nf_subs_csv_field_label', $label, $field_id );
+				$label_array[0][ $field_id ] = mb_convert_encoding(apply_filters( 'nf_subs_csv_field_label', $label, $field_id ), "windows-1252");
 			}
 		}
 
@@ -243,7 +243,10 @@ class NF_Subs {
 					}
 					
 					// Run our final value through the appropriate filters and assign it to the array.
-					$value_array[ $x ][ $field_id ] = htmlspecialchars_decode( apply_filters( 'nf_subs_csv_field_value', $user_value, $field_id ), ENT_QUOTES );					
+					$value = apply_filters( 'nf_subs_csv_field_value', $user_value, $field_id );
+					$value = mb_convert_encoding($value, "windows-1252");
+					$value_array[ $x ][ $field_id ] = $value;
+					
 				}
 			}
 			$x++;
@@ -259,7 +262,7 @@ class NF_Subs {
 
 		if( $return ){
 			return str_putcsv( $array, 
-				apply_filters( 'nf_sub_csv_delimiter', ',' ), 
+				apply_filters( 'nf_sub_csv_delimiter', ';' ), 
 				apply_filters( 'nf_sub_csv_enclosure', '"' ), 
 				apply_filters( 'nf_sub_csv_terminator', "\n" )
 			);
@@ -270,7 +273,7 @@ class NF_Subs {
 			header( 'Expires: 0' );
 			echo apply_filters( 'nf_sub_csv_bom',"\xEF\xBB\xBF" ) ; // Byte Order Mark
 			echo str_putcsv( $array, 
-				apply_filters( 'nf_sub_csv_delimiter', ',' ), 
+				apply_filters( 'nf_sub_csv_delimiter', ';' ), 
 				apply_filters( 'nf_sub_csv_enclosure', '"' ), 
 				apply_filters( 'nf_sub_csv_terminator', "\n" )
 			);
